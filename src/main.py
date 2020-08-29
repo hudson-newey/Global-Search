@@ -11,4 +11,4 @@ exec(rf("fileServer.py"))
 
 # arg1 defines live server port
 # main calling point of program
-startServer(8000)
+startServer(8080)
