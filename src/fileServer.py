@@ -1,6 +1,5 @@
 import http.server
 import socketserver
-import urllib
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 import glob
@@ -75,18 +74,14 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
                 # remove substring and append to page
                 linkToAppend = links[i].replace('/url?q=','')
 
-                # if using google or similar engines you may need to modify this to create a usable URL
-                if "&sa=" in linkToAppend:
-                    # find index of "&sa=" url paramiter which breaks the links
-                    scanningIndex = -1
-                    scanningIndex = linkToAppend.find("&sa=")
+                # create usable link
+                # this is a very complex task
+                linkToAppend = createUsableLink(links[i])
 
-                    # extract sub-string from to append link
-                    linkToAppend = linkToAppend[:-(len(linkToAppend)-scanningIndex):]
-                
                 # decode URI to URL
-                linkToAppend = urllib.parse.unquote(urllib.parse.unquote(linkToAppend))
-                    
+                linkToAppend = uriToURL(linkToAppend)
+                
+                # append link result to webpage
                 html += f"""<a class='websiteLink' href='{translationProvider}{linkToAppend}'>{linkToAppend}</a><br>"""
             
             # scanning sequence
