@@ -16,7 +16,9 @@ searchProvider = "https://www.google.com/search?q="
 
 # the translation provider is a 3rd party add that automatically translates websites into english (or desired language)
 # the translation will be done to all unknown languages
-translationProvider = "https://translate.google.com/translate?sl=auto&tl=en&u="
+
+# possible translation provider: https://translate.google.com/translate?sl=auto&tl=en&u=
+translationProvider = ""
 
 # LOCAL HTTP FILE SERVER (modifyed to serve web query requests)
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):

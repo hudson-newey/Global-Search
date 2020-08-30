@@ -11,7 +11,7 @@ def translate(text, lang):
     translation = translator.translate(text, src="en", dest=lang)
 
     # debug info
-    print(f"{translation.origin} --> {translation.text}")
+    print(f"{translation.origin} --> {translation.text} ({lang})")
     
     # return translated text as string
     return translation.text

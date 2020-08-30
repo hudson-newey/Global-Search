@@ -8,11 +8,15 @@ a:link, a:visited, a:active {
 	text-decoration: none;
 	font-size: 20px;
 	top: 10px;
-	font-family: "Courier New", Courier, monospace;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 a:hover {
 	color: blue;
+}
+
+#main-title {
+	font-family: Georgia, serif;
 }
 
 #searchBox {

@@ -16,6 +16,7 @@ def getLinks(url):
     for source in soup.find_all('a'):
         links.append(source.get('href'))
     
+    # return all links in the webpage (as array)
     return links
 
 # convert URI to URL
@@ -28,14 +29,27 @@ def createUsableLink(uri):
     # remove substring and append to page
     uri = uri.replace('/url?q=','')
 
+    # "?ref_src=" paramiter will always get poped first, as it it always the first url paramiter
+
+    # remove referal uri's
+    # this breaks the translation feature
+    if f"%3Fref_src%3D" in uri:
+        scanningIndex1 = -1
+        scanningIndex1 = uri.find(f"%3Fref_src%3D")
+
+        # extract sub-string and pop from to append link
+        
+        # minus one has to be added to get "?" charicter
+        uri = uri[:-(len(uri)-scanningIndex1):]
+
     # if using google or similar engines you may need to modify this to create a usable URL
     if "&sa=" in uri:
         # find index of "&sa=" url paramiter which breaks the links
-        scanningIndex = -1
-        scanningIndex = uri.find("&sa=")
+        scanningIndex2 = -1
+        scanningIndex2 = uri.find("&sa=")
 
-        # extract sub-string from to append link
-        uri = uri[:-(len(uri)-scanningIndex):]
+        # extract sub-string and pop from to append link
+        uri = uri[:-(len(uri)-scanningIndex2):]
     
     # return usable link
     return uri
