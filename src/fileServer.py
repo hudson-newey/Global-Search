@@ -7,7 +7,7 @@ import time
 
 # languages that the program searches in
 # these languages were chosen since they have some of the smartest and most complete online presence
-# LEGEND: german, chinese (simplifyed) 
+# LEGEND: german, chinese (simplified)
 languages = ["de", "zh-cn"]
 
 # the search provider is the 3rd party app that does all the search processing
@@ -20,7 +20,7 @@ searchProvider = "https://www.google.com/search?q="
 # possible translation provider: https://translate.google.com/translate?sl=auto&tl=en&u=
 translationProvider = ""
 
-# LOCAL HTTP FILE SERVER (modifyed to serve web query requests)
+# LOCAL HTTP FILE SERVER (modified to serve web query requests)
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # Sending an '200 OK' response
