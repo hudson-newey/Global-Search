@@ -95,13 +95,13 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         for i in range(len(foreignLinks)):
 
             # test that it is a link that we want
-            if "/url?q=" in links[i]:
+            if "/url?q=" in foreignLinks[i]:
                 # remove substring and append to page
-                linkToAppend = links[i].replace('/url?q=','')
+                linkToAppend = foreignLinks[i].replace('/url?q=','')
 
                 # create usable link
                 # this is a very complex task
-                linkToAppend = createUsableLink(links[i])
+                linkToAppend = createUsableLink(foreignLinks[i])
 
                 # decode URI to URL
                 linkToAppend = uriToURL(linkToAppend)
