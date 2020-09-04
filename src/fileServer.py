@@ -18,7 +18,7 @@ searchProvider = "https://www.google.com/search?q="
 # the translation will be done to all unknown languages
 
 # possible translation provider: https://translate.google.com/translate?sl=auto&tl=en&u=
-translationProvider = ""
+translationProvider = "https://translate.google.com/translate?sl=auto&tl=en&u="
 
 # LOCAL HTTP FILE SERVER (modified to serve web query requests)
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -52,12 +52,13 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         # get and display links
         # do english results first
-        # "links" variable is a array storing all links
+        # "links" variable is a array storing all "native language" links
         links = getLinks(searchProvider + searchTerm)
 
         # international and global results
+        foreignLinks = []
         for country in range(len(languages)):
-            links += getLinks(searchProvider + translate(searchTerm, languages[country]))
+            foreignLinks += getLinks(searchProvider + translate(searchTerm, languages[country]))
             
             # make the program delayed so you don't get locked out
             # default is 1.2 (seconds)
@@ -68,7 +69,29 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         # (e.g. wikipedia pages are usually universal)
         links = list(dict.fromkeys(links))
 
-        # scan and append all links to dynamic webpage
+        # scan and append all "native language" links to dynamic webpage
+        for i in range(len(links)):
+
+            # test that it is a link that we want
+            if "/url?q=" in links[i]:
+                # remove substring and append to page
+                linkToAppend = links[i].replace('/url?q=','')
+
+                # create usable link
+                # this is a very complex task
+                linkToAppend = createUsableLink(links[i])
+
+                # decode URI to URL
+                linkToAppend = uriToURL(linkToAppend)
+                
+                # append link result to webpage
+                html += f"""<a class='websiteLink' href='{linkToAppend}'>{linkToAppend}</a><br>"""
+            
+            # scanning sequence
+            continue
+
+        # scan and append all "foreign websites" links to dynamic webpage
+        # these websites require translation of webpages
         for i in range(len(links)):
 
             # test that it is a link that we want
