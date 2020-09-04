@@ -92,7 +92,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         # scan and append all "foreign websites" links to dynamic webpage
         # these websites require translation of webpages
-        for i in range(len(links)):
+        for i in range(len(foreignLinks)):
 
             # test that it is a link that we want
             if "/url?q=" in links[i]:
