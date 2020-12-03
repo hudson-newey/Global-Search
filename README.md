@@ -8,4 +8,4 @@ _When searching the web you only get results in your own language. Global Search
 > pip3 install beautifulsoup4
 
 ##### _`Created by: Grathium Industries`_  
-##### _`Under GNU Public License 3.0`_
+##### _`Under MIT LICENSE`_
