@@ -7,5 +7,5 @@ _When searching the web you only get results in your own language. Global Search
 > pip3 install googletrans  
 > pip3 install beautifulsoup4
 
-##### _`Created by: Grathium Industries`_  
+##### _`Created by: Hudson Newey`_  
 ##### _`Under MIT LICENSE`_
