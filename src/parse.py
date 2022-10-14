@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup, SoupStrainer
+from bs4 import BeautifulSoup
 import requests
 import urllib
 
@@ -10,7 +10,7 @@ def getLinks(url):
 
     page = requests.get(url)
     data = page.text
-    soup = BeautifulSoup(data)
+    soup = BeautifulSoup(data, features="html.parser")
 
     # extract href="" values from <a> tags
     for source in soup.find_all('a'):

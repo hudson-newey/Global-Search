@@ -5,17 +5,18 @@ from urllib.parse import parse_qs
 import glob
 import time
 
-# languages that the program searches in
-# these languages were chosen since they have some of the smartest and most complete online presence
-# LEGEND: german, chinese (simplified)
-languages = ["de", "zh-cn"]
+# local file imports
+from util import rf
+from parse import getLinks, createUsableLink, uriToURL
+from translate import translate
+from GLOBALS import LANGUAGES
 
 # the search provider is the 3rd party app that does all the search processing
 # the results are parsed and all links are extracted from the source page
 searchProvider = "https://www.google.com/search?q="
 
 # the translation provider is a 3rd party add that automatically translates websites into english (or desired language)
-# the translation will be done to all unknown languages
+# the translation will be done to all unknown LANGUAGES
 
 # possible translation provider: https://translate.google.com/translate?sl=auto&tl=en&u=
 translationProvider = "https://translate.google.com/translate?sl=auto&tl=en&u="
@@ -57,15 +58,16 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         # international and global results
         foreignLinks = []
-        for country in range(len(languages)):
-            foreignLinks += getLinks(searchProvider + translate(searchTerm, languages[country]))
+        for language in LANGUAGES:
+            translatedTerm = translate(searchTerm, language)
+            foreignLinks += getLinks(searchProvider + translatedTerm)
             
             # make the program delayed so you don't get locked out
             # default is 1.2 (seconds)
             time.sleep(0.8)
 
         # remove all double-ups from search result list
-        # this may be due to finding the same results in multipule languages
+        # this may be due to finding the same results in multipule LANGUAGES
         # (e.g. wikipedia pages are usually universal)
         links = list(dict.fromkeys(links))
 
