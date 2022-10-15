@@ -1,0 +1,66 @@
+$background-color: white;
+$text-color: black;
+$accent-color: #112277;
+$font-size: 24px;
+
+html {
+    background-color: $background-color;
+	font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+// dynamically generated components
+
+a {
+	&:link, &:visited, &:active {
+		position: relative;
+		color: $text-color;
+		text-decoration: none;
+		font-size: $font-size;
+		top: 10px;
+		font-family: "Trebuchet MS", Helvetica, sans-serif;
+	}
+
+	&:hover {
+		color: $accent-color;
+	}
+}
+
+.resultsList {
+	padding: 1px;
+}
+
+.search-result {
+	padding: 20px;
+	border-style: dotted;
+	border-width: 1px;
+}
+
+// headers and common components
+body {
+	position: absolute;
+}
+
+h1 {
+	position: relative;
+	font-size: calc(20px + 5px);
+    text-decoration: none;
+	font-weight: 400;
+}
+
+#searchBTN {
+	position: relative;
+	left: 60vw;
+	font-size: $font-size;
+	background-color: $background-color;
+	color: $accent-color;
+	border-style: dotted;
+	border-width: 1px;
+}
+
+#searchBox {
+	position: absolute;
+	border-style: dotted;
+	border-width: 1px;
+	font-size: $font-size;
+	width: 60vw;
+}

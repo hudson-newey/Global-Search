@@ -19,6 +19,19 @@ def getLinks(url):
     # return all links in the webpage (as array)
     return links
 
+def websiteTitle(link):
+    # this function returns the title of the website
+    # return type: string
+    try:
+        page = requests.get(link)
+        data = page.text
+        soup = BeautifulSoup(data, features="html.parser")
+        title = soup.find("title").get_text()
+        return title
+    except Exception as e:
+        print(e)
+        return "Error Fetching Website Title"
+
 # convert URI to URL
 def uriToURL(uri):
     return urllib.parse.unquote(urllib.parse.unquote(uri))

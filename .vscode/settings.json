@@ -1,4 +1,5 @@
 {
     "python.pythonPath": "/usr/bin/python3",
-    "files.insertFinalNewline": true
+    "files.insertFinalNewline": true,
+    "compile-hero.disable-compile-files-on-did-save-code": false
 }

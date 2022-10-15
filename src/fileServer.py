@@ -2,27 +2,20 @@ import http.server
 import socketserver
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
-import glob
 import time
 
 # local file imports
 from util import rf
-from parse import getLinks, createUsableLink, uriToURL
+from parse import getLinks, createUsableLink, uriToURL, websiteTitle
 from translate import translate
-from GLOBALS import LANGUAGES
-
-# the search provider is the 3rd party app that does all the search processing
-# the results are parsed and all links are extracted from the source page
-searchProvider = "https://www.google.com/search?q="
-
-# the translation provider is a 3rd party add that automatically translates websites into english (or desired language)
-# the translation will be done to all unknown LANGUAGES
-
-# possible translation provider: https://translate.google.com/translate?sl=auto&tl=en&u=
-translationProvider = "https://translate.google.com/translate?sl=auto&tl=en&u="
+from GLOBALS import LANGUAGES, SEARCH_PROVIDER, TRANSLATION_PROVIDER
 
 # LOCAL HTTP FILE SERVER (modified to serve web query requests)
 class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def serveHTML(self, htmlCode):
+        # Writing the HTML contents with UTF-8
+        self.wfile.write(bytes(htmlCode, "utf8"))
+
     def do_GET(self):
         # Sending an '200 OK' response
         self.send_response(200)
@@ -45,6 +38,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         if searchTerm == 'null':
             # debug info
             print("broke away from loading external file")
+            self.serveHTML(rf("static/index.html"))
             return None
 
         # WEBPAGE
@@ -54,13 +48,13 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         # get and display links
         # do english results first
         # "links" variable is a array storing all "native language" links
-        links = getLinks(searchProvider + searchTerm)
+        links = getLinks(f"{SEARCH_PROVIDER}{searchTerm}")
 
         # international and global results
         foreignLinks = []
         for language in LANGUAGES:
             translatedTerm = translate(searchTerm, language)
-            foreignLinks += getLinks(searchProvider + translatedTerm)
+            foreignLinks += getLinks(f"{SEARCH_PROVIDER}{translatedTerm}")
             
             # make the program delayed so you don't get locked out
             # default is 1.2 (seconds)
@@ -85,9 +79,16 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
                 # decode URI to URL
                 linkToAppend = uriToURL(linkToAppend)
+
+                if ("google.com" in linkToAppend):
+                    continue
                 
                 # append link result to webpage
-                html += f"""<a class='websiteLink' href='{linkToAppend}'>{linkToAppend}</a><br>"""
+                html += f"""<div class='search-result'>
+                <b><h3>{websiteTitle(linkToAppend)}</h3></b><br>
+                <a class='websiteLink' href='{linkToAppend}'>{linkToAppend}</a>
+                </div>
+                <br>"""
             
             # scanning sequence
             continue
@@ -107,22 +108,28 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
 
                 # decode URI to URL
                 linkToAppend = uriToURL(linkToAppend)
+
+                if ("google.com" in linkToAppend):
+                    continue
                 
                 # append link result to webpage
-                html += f"""<a class='websiteLink' href='{translationProvider}{linkToAppend}'>{linkToAppend}</a><br>"""
+                html += f"""<div class='search-result'>
+                <b><h3>{websiteTitle(TRANSLATION_PROVIDER + linkToAppend)}</h3></b><br>
+                <a class='websiteLink' href='{TRANSLATION_PROVIDER}{linkToAppend}'>{linkToAppend}</a>
+                </div>
+                <br>"""
             
             # scanning sequence
             continue
 
         # static webpage html imports
-        html += ("</p></body></html><style>"+rf("./static/css/style.css")+"</style>"+
-            "<script>"+rf("./static/js/func.js")+"</script>"+
-            "<script>"+rf("./static/js/script.js")+"</script>")
+        html += ("</p></body></html><style>"+rf("./static/css/dist/style.css")+"</style>"+
+            "<script>"+rf("./static/js/dist/func.js")+"</script>"+
+            "<script>"+rf("./static/js/dist/script.js")+"</script>")
 
 
 
-        # Writing the HTML contents with UTF-8
-        self.wfile.write(bytes(html, "utf8"))
+        self.serveHTML(html)
         return
 
 # arg 1 is server port
