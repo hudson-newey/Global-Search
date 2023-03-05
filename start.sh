@@ -11,7 +11,7 @@ initilize_python_virtual_environment() {
         if [ $? -eq 0 ]; then
             USE_PYTHON3=0;
         else
-            echo "Error: Neither Python or Python found in PATH";
+            echo "Error: Neither Python2 or Python3 found in PATH";
             exit;
         fi
     fi
@@ -22,7 +22,21 @@ initilize_python_virtual_environment() {
     else
         python -m venv ./venv/;
     fi
-    source ./venv/bin/activate;
+
+    if [ -d ./venv/bin/ ]; then
+        # user is on linux
+        source ./venv/bin/activate;
+    else
+        # user is on windows
+        source ./venv/Scripts/activate;
+    fi
+
+    # upgrade pip
+    if [ $USE_PYTHON3 -eq 1 ]; then
+        python3 -m pip install --upgrade pip;
+    else
+        python -m pip install --upgrade pip;
+    fi
 
     # install requirements.txt
     if [ -f ./requirements.txt ]; then
@@ -32,7 +46,8 @@ initilize_python_virtual_environment() {
             pip install -r ./requirements.txt;
         fi
     else
-        echo "Proceding without ./requirements.txt";
+        echo "Creating empty requirements.txt";
+        touch requirements.txt;
     fi
 }
 
@@ -41,7 +56,14 @@ activate_python() {
     if [ ! -d ./venv/ ]; then
         initilize_python_virtual_environment;
     else
-        source ./venv/bin/activate;
+        # use the correct activate command whether the user is on linux or windows
+        if [ -d ./venv/bin/ ]; then
+            # user is on linux
+            source ./venv/bin/activate;
+        else
+            # user is on windows
+            source ./venv/Scripts/activate;
+        fi
     fi
 }
 
@@ -54,9 +76,23 @@ deactivate_python() {
     fi
 }
 
-activate_python;
+init_environment() {
+  if [ ! -f ./.gitignore ]; then
+    echo "Creating Python .gitignore";
+    wget https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore -O .gitignore;
+  fi
+}
 
-# program entry point
-python3 ./src/main.py;
+main() {
+  if [ "$(id -u)" -eq 0 ]; then
+    echo -e "\e[93m[WARNING] Python is running as Root!\e[39m";
+  fi
 
-deactivate_python;
+  init_environment;
+
+  activate_python;
+  python3 ./src/main.py $@;
+  deactivate_python;
+}
+
+main $@;
